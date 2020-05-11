@@ -1,0 +1,3 @@
+[submodule "1_conjunto_de_dados/dataset"]
+	path = 1_conjunto_de_dados/dataset
+	url = https://github.com/cmath-covid/dataset.git

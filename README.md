@@ -1,6 +1,6 @@
 ## covid19-model
 
-ToDo
+Este é um projeto desenvolvido na disciplina de Matemática Computacional do programa de pós-graduação do Instituto Nacional de Pesquisas Espaciais (INPE), no contexto de Análise Estatística e Espectral de Processos Estocásticos.
 
 ## Desenvolvendo
 

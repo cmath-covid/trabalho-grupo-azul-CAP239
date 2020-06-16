@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jun  2 19:02:48 2020
-
-Neste teste a geração dos valores é feita de maneira a consumir tudo o que é predito. Validado
+Este teste busca seguir ao máximo os passos apresentados durante a aula de explicação do modelo e também do documento
+pdf com a descrição das equações mestres do modelo. Neste teste, a geração dos valores é feita de maneira a consumir tudo
+o que já foi predito, ou seja, a média, a cada dia de predição tem mais valores preditos anteriormente, ao passo que, depois
+de 7 dias de previsão, são usados apenas valores preditos. Além disso, os valores considerados no dia (nkt) também são valores preditos
+do dia anterior.
+Neste modelo, as últimas alterações estão disponíveis.
 """
+
 
 import pendulum
 import numpy as np
@@ -12,21 +16,41 @@ import pandas as pd
 from plotnine import *
 import matplotlib.pyplot as plt
 
-OWURL = 'owid-covid-data.csv'
+# Ferramentas para a configuração do plot
+import locale
+import matplotlib.dates as mdates
+locale.setlocale(locale.LC_ALL, '')
+
+# Definindo tipos de Espectros de peso
+WeightSpectraCase1 = np.array([0.5, 0.45, 0.05])
+WeightSpectraCase2 = np.array([0.7, 0.25, 0.05])
+
+# Vetores de multiplicação base para a geração dos N_min, N_max
+NMINVECCASE2 = np.array([1, 3, 5])
+NMAXVECCASE2 = np.array([2, 4, 6])
+
 
 ##### Aquisição de dados de dados
 def load_owd():
+    OWURL = 'owid-covid-data.csv'
     _data = pd.read_csv(OWURL)
     _data["date"] = pd.to_datetime(_data["date"])
     _data.set_index("date", inplace = True)
     return _data
 
+
 def get_nearest_date(data, actual_date, days = 7,  isMean = True):
-    """Função para busca em dados. Utilizada em casos como a Angola que
-    não possui os dados completos
+    """Função para a busca em vizinhança de dados de países que não possuem os dados completos.
     
-    Funcionamento: Partindo de uma data, encontra 7 data anteriores a esta
+    Args:
+        data (pd.DataFrame): Conjunto de dados OWD
+        actual_date (str): String no formato "YYYY-MM-DD" para a busca
+        days (int): Quantidade de dias consideradas para a busca
+        is_mean (bool): Indica se o valore buscado deve sair já com a média
+    Returns:
+        pd.Series ou float
     """
+
     actual_date = pendulum.from_format(actual_date, "YYYY-MM-DD")
     elements = []
     
@@ -43,7 +67,19 @@ def get_nearest_date(data, actual_date, days = 7,  isMean = True):
     else:
         return pd.concat(elements).new_cases.tolist()
 
-def nkb_avg(data, actual_date = pendulum.now().to_date_string(), days = 7, isIncomplete = False, isMean = True):    
+
+def nkb_avg(data, actual_date = pendulum.now().to_date_string(), days = 7, isIncomplete = False, isMean = True):
+    """Função para a geração da média dos dias anteriores ao dia inserido.
+    Args:
+        data (pd.DataFrame): Dados OWD
+        actual_date (str): String com a data em que a busca começa, no formato "YYYY-MM-DD"
+        days (int): Quantidade de dias anteriores a serem pesquisados
+        is_incomplete (bool): Flag indicando se a busca precisa ser feita na vizinhança
+        is_mean (bool): Flag inficando se o valor a ser devolvido é a média ou o conjunto de dados
+    Returns:
+        pd.Series ou int
+    """
+
     if isIncomplete: # Caso particular
         return get_nearest_date(data, actual_date, days = days, isMean = isMean)
     
@@ -60,18 +96,18 @@ def nkt(data, actual_date = pendulum.now().to_date_string()):
     return data[data.index == actual_date].new_cases.values[0]
 #######
 
-# Definindo tipos de Espectros de peso
-WeightSpectraCase1 = np.array([0.5, 0.45, 0.05])
-WeightSpectraCase2 = np.array([0.7, 0.25, 0.05])
-
-# Vetores de multiplicação base para a geração dos N_min, N_max
-NMINVECCASE1 = np.array([2, 4, 5])
-NMAXVECCASE1 = np.array([4, 7, 10])
-NMINVECCASE2 = np.array([1, 3, 5])
-NMAXVECCASE2 = np.array([2, 4, 6])
 
 # Equação 1
 def generate_nmin_nmax(ns, gfactor, nminvec = NMINVECCASE2, nmaxvec = NMAXVECCASE2):
+    """Função para a geração dos valores mínimos e máximos.
+    Args:
+        ns (np.ndarray): Valores de n
+        gfactor (float): Valor de g
+        nminvec (np.ndarray): Array com os valores que deve ser utilizados na multiplicação do valor mínimo
+        nmaxvec (np.ndarray): Array com os valores que deve ser utilizados na multiplicação do valor mínimo
+    Returns:
+        tuple: Tupla com os valores (mínimo, máximo)
+    """
     return (
         gfactor * ( (ns * nminvec).sum() ),
         gfactor * ( (ns * nmaxvec).sum() )
@@ -79,36 +115,85 @@ def generate_nmin_nmax(ns, gfactor, nminvec = NMINVECCASE2, nmaxvec = NMAXVECCAS
 
 # Equações 3, 4 e 5
 def generate_nvec(nkt, weight_spectra):
+    """Gera os vetores de N.
+    Args:
+        nkt (float): Número de casos atual
+        weight_spectra (np.ndarray): Espectro de pesos
+    See:
+        A operação é considerada como uma convolução, onde os valores são multiplicados com todos os valores
+    """
     return nkt * weight_spectra
 
+
 def generate_gfactor(nkb_average, nkt):
+    """Função para a geração do fator g
+    Args:
+        nkb_average (float): Valor médio dos casos anteriores
+        nkt (float): Número de casos atual
+    Returns:
+        float
+    """
     if nkt > nkb_average:
         return nkb_average / nkt
     else:
         return nkt / nkb_average
 
+
 def wisdom_of_the_crowd(nmin_nmax):
+    """Aplica a sabedoria das massas, gerando o valor predito para o dia
+    Args:
+        nmin_nmax (tuple): Tupla com os valores mínimos e máximos
+    Returns:
+        int: Valor médio estimado para o dia corrente
+    """
     return int((nmin_nmax[0] + nmin_nmax[1]) / 2)
 
+
 def delta_g(g, g0, qg, qg0):
+    """Gera o delta g"""
     if g0 < g:
         return (g0 - g) - qg
     else:
         return (g0 - g) + qg0
 
+
 def generate_qg(g):
+    """Gera o qg"""
     return (1 - g) ** 2
 
+
 def generate_qg0(g0):
+    """Gera o qg0"""
     return (1 - g0) ** 2
 
+
 def derivative_nk(nkb_average, nkt):
+    """Gera d_nk"""
     return (nkb_average - nkt) / nkt
 
+
 def suppression_factor(delta_g, derivative_nk):
+    """Gera o fator de supressão"""
     return ((2*delta_g) + derivative_nk) / 3
 
+
 def covidmodeler(data, dayzero, days_to_predict, weight_spectra, days_before = 7, isIncomplete = False, usePredict = True):
+    """Função para a aplicação do modelo de predição de casos diários, baseado em cascatas multiplicativas e fluídos sociais
+        desenvolvido pelo Prof. Dr. Reinaldo Rosa
+    Args:
+        data (pd.DataFrame): Conunto de dados considerados na predição
+        dayzero (str): String no formato "YYYY-MM-DD" indicando o dia de início da predição
+        days_to_predict (int): Quantidade de dias futuros a serem preditos
+        weight_spectra (np.ndarray): Espectro de peso considerado pelo modelo
+        days_before (int): Quantidade de dias anteriores utilizados na média movel
+        is_incomplete (bool): Flag indicando se os dados estão completos. Caso não estejam, a busca por datas vizinhas
+        é aplicada
+        use_predict (bool): Flag indicando se os dados preditos deve ser usados na média móvel
+    Returns:
+        tuple: Tupla contendo ( Valores preditos, Parâmetros gerais , Parâmetros de supressão )
+    """
+    
+    
     predictedvalues = {
 		'date': [],
 		'new_cases': []
@@ -183,7 +268,7 @@ def covidmodeler(data, dayzero, days_to_predict, weight_spectra, days_before = 7
 
     for _ in range(0, days_to_predict - 1):
         if days_before < 0:
-            # Busca nos valores preditos..            
+            # Busca nos valores preditos         
             nkb7 = search_predicted_values(predictedvalues, actual_date).new_cases.mean()
         elif usePredict:
             nkb7 = nkb_avg(data, actual_date.to_date_string(), days = dd, isIncomplete = isIncomplete, isMean = False)
@@ -226,7 +311,16 @@ def covidmodeler(data, dayzero, days_to_predict, weight_spectra, days_before = 7
         pd.DataFrame(predictedvalues), pd.DataFrame(generated_parameters), pd.DataFrame(generated_supression_parameters)
     )
 
+
 def generate_fiocruz_datamean(data: pd.DataFrame):
+    """Função para gerar a estimativa de casos seguindo o estudo da Fiocruz (12 vezes a quantidade diária). Além disso
+    a média entre os valores de caso diário observado e o estimado pela Fiocruz são calculados.
+    Args:
+        data (pd.DataFrame): Conjunto de dados com colunas "new_cases"
+    Returns:
+        pd.DataFrame: Tabela com as colunas "fiocruz_estimate" e "fiocruz_mean"
+    """
+
     _data = data.copy()
     _data = _data.assign(fiocruz_estimate = lambda x: x['new_cases'] * 12)
     return _data.assign(fiocruz_mean = lambda x: (x['new_cases'] + x['fiocruz_estimate']) / 2)
@@ -242,3 +336,39 @@ def organize_data(predictedvalues, generated_parameters, data_owd):
     merged = generated_parameters.merge(merged, left_index=True, right_index=True)
 
     return merged
+
+
+## Função auxiliar para a visualização das curvas G e S de maneira
+### padronizada
+def plot_g_and_s(generated_parameters, generated_supression_parameters, create_fig = True):
+    """Função auxiliar para gerar as curvas de G e S de uma execução do modelo
+
+    Args:
+        generated_parameters (pd.DataFrame): Tabela com todos os parâmetros gerados pelo modelo
+        generated_supression_parameters (pd.DataFrame): Tabela com os parâmetros gerados de supressão
+    Returns:
+        None
+    """
+
+    # Gerando os plots de G e S
+    if create_fig:
+        plt.figure(dpi = 300, figsize = (8, 3))
+    
+    ax = plt.subplot(1, 2, 1)
+    plt.title("Parâmetro g")
+    plt.plot(generated_parameters.iloc[1:, :].index, generated_parameters.iloc[1:, :].g, 'k--o')
+    plt.xticks(rotation = 25)
+    ax.xaxis.set_major_locator(mdates.WeekdayLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
+    
+    ax = plt.subplot(1, 2, 2)
+    # Organizando os dados de parâmetros de supressão gerados
+    generated_supression_parameters.set_index('reference_date', inplace = True)
+    generated_supression_parameters.index = generated_supression_parameters.index.tz_convert(tz = None)
+
+    plt.title("Parâmetro s")
+    plt.plot(generated_supression_parameters.index, generated_supression_parameters.s, 'k--o')
+    plt.xticks(rotation = 25)
+    ax.xaxis.set_major_locator(mdates.WeekdayLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
+    plt.tight_layout()

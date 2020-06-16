@@ -16,7 +16,7 @@ Este é um projeto desenvolvido na disciplina de Matemática Computacional do pr
 
 O desenvolvimento desta atividade foi feito através da criação de uma ferramenta automatizada para a aquisição de dados. As fontes de dados utilizadas são: (i) Para os dados de países utilizou-se o [Our World In Data](https://ourworldindata.org/coronavirus); (ii) Os dados das regiões foi feita a utilização dos dados da [Brasil.io](https://brasil.io/home/).
 
-A ferramenta desenvolvida está neste [repositório](https://github.com/cmath-covid/dataset)
+A ferramenta desenvolvida está neste [repositório](https://github.com/cmath-covid/ferramenta-aquisicao-de-dados)
 
 2. Visualização, Cullen-Frey, Histogramas e PDFs: A partir do dataset do seu Team visualize, obtenha os respectivos Histogramas e PDFs para as seguintes variáveis: Número Total de Casos, Número Total de Mortes, Número Total De Testes, `Número Diário de Casos` (NDC), `Número Diário de Mortes` (NDM), `Número Diário de Testes` (NDT). Identifique semelhanças e discrepâncias entre os países. Este exercício é apenas para os dados da OWD. Implemente ainda uma análise de regressão linear em Python entre as variáveis: NDC e NDT para os países que apresentam PDF próximas
 

@@ -6,6 +6,8 @@
 
 Este é um projeto desenvolvido na disciplina de Matemática Computacional do programa de pós-graduação do Instituto Nacional de Pesquisas Espaciais (INPE), no contexto de Análise Estatística e Espectral de Processos Estocásticos.
 
+Para acessar o documento do relatório final, [clique aqui](https://github.com/cmath-covid/trabalho-grupo-azul-CAP239/blob/master/CAP-239-FCOSSETIN_FMENINO_FPERIN.pdf). Abaixo são feitas as descrições de cada uma das atividades e seu relacionamento com os arquivos do repositório.
+
 ## Atividades
 
 1. Dataset: A partir do *dataset* da OWD (UK) construa um *dataset* com os dados indicados abaixo, relativos aos países e regiões selecionados para o grupo.

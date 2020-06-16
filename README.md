@@ -51,7 +51,7 @@ A implementação está disponível no diretório [3_modelo_previsao_covid19](3_
 
 4. Com base na teoria da “wisdom of the crowd ” adapte o modelo para prever o comportamento das curvas de g e s até uma data fixa escolhida como input. E com base na hipótese do máximo de 30±8 semanas identifique o pico e o final (mínimo e máximo) da epidemia em cada país.
 
-Após a implementação do modelo no passo 3, foi percebido que o comportamento do mesmo tem tendências exponenciais, então, para entender este relação, os testes do diretório [4_final_da_pandemia](4_final_da_pandemia) foram criados, estes são utilizados como base para os argumentos apresentados no relatório final, indicando que com este comportamento não é possível estimar este comportamento.
+Após a implementação do modelo no passo 3, foi percebido que o comportamento do mesmo tem tendências exponenciais, então, para entender este relação, os testes do diretório [4_final_da_pandemia](4_final_da_pandemia/1_verificando_fim_da_pandemia.ipynb) foram criados, estes são utilizados como base para os argumentos apresentados no relatório final, indicando que com este comportamento não é possível estimar este comportamento.
 
 > Por conta dos resultados apresentados pelo modelo implementado no passo 3, foi assumido que este exercício não era passível de ser resolvido, uma vez que, os crescimentos exponenciais apresentados pelo modelo impedem extrapolações que poderiam ser usadas para a avaliação do fim da pandemia. De toda forma, a teoria de wisdow of the crowd é aplicada no modelo desenvolvido no exercício 3.
 

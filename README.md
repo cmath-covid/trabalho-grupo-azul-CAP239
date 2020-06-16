@@ -32,9 +32,13 @@ Para o desenvolvimento desta atividade, foram criados diversos scripts de análi
 
 Estes foram os passos utilizados para a realização deste exercício 2.
 
-3. Previsão Diária: Adapte e Aplique o modelo IMCSF-COVID19.py para cálculo automático das curvas de g e s, para todos os países e regiões, até o dia 20/5/2020. Considere o primeiro dia com mais de 50 casos
+3. Previsão Diária: Adapte e Aplique o modelo IMCSF-COVID19.py para cálculo automático das curvas de g e s, para todos os países e regiões, até o dia 20/5/2020. Considere o primeiro dia com mais de 50 casos.
 
-4. Com base na teoria da “wisdom of the crowd ” adapte o modelo para prever o comportamento das curvas de g e s até uma data fixa escolhida como input. E com base na hipótese do máximo de 30±8 semanas identifique o pico e o final (mínimo e máximo) da epidemia em cada país.
+Nesta atividade, fez-se a implementação do modelo ICMSF-COVID19 já considerando todas as necessidades para a previsão de casos em múltiplos dias, a implementação foi criada para funcionar de maneira modular, podendo ser facilmente expandida e alterada. A forma de implementação privilegia a semântica dos dados, evitando que erros relacionados a manipulação de arrays venha a causar problemas em seu funcionamento.
+
+A implementação está disponível no diretório [3_modelo_previsao_covid19](3_modelo_previsao_covid19).
+
+1. Com base na teoria da “wisdom of the crowd ” adapte o modelo para prever o comportamento das curvas de g e s até uma data fixa escolhida como input. E com base na hipótese do máximo de 30±8 semanas identifique o pico e o final (mínimo e máximo) da epidemia em cada país.
 
 > Por conta dos resultados apresentados pelo modelo implementado no passo 3, foi assumido que este exercício não era passível de ser resolvido, uma vez que, os crescimentos exponenciais apresentados pelo modelo impedem extrapolações que poderiam ser usadas para a avaliação do fim da pandemia. De toda forma, a teoria de wisdow of the crowd é aplicada no modelo desenvolvido no exercício 3.
 

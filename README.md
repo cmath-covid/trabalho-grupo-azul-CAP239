@@ -4,7 +4,18 @@
     <img src="images/logo_inpe.png"/>
 </center>
 
-Este é um projeto desenvolvido na disciplina de Matemática Computacional do programa de pós-graduação do Instituto Nacional de Pesquisas Espaciais (INPE), no contexto de Análise Estatística e Espectral de Processos Estocásticos.
+Docentes:
+- Dr. Reinaldo Rosa
+- Dr. Leonardo B. L. Santos
+
+Discentes:
+ - Fernando Cossetin;
+ - Felipe Menino Carlos;
+ - Felipe Perin.
+
+Este é um projeto desenvolvido na disciplina de Matemática Computacional do programa de pós-graduação do Instituto Nacional de Pesquisas Espaciais (INPE), no contexto de Análise Estatística 
+e Espectral de Processos Estocásticos.
+<hr>
 
 Para acessar o documento do relatório final, [clique aqui](https://github.com/cmath-covid/trabalho-grupo-azul-CAP239/blob/master/CAP-239-FCOSSETIN_FMENINO_FPERIN.pdf). Abaixo são feitas as descrições de cada uma das atividades e seu relacionamento com os arquivos do repositório.
 
@@ -38,7 +49,9 @@ Nesta atividade, fez-se a implementação do modelo ICMSF-COVID19 já consideran
 
 A implementação está disponível no diretório [3_modelo_previsao_covid19](3_modelo_previsao_covid19).
 
-1. Com base na teoria da “wisdom of the crowd ” adapte o modelo para prever o comportamento das curvas de g e s até uma data fixa escolhida como input. E com base na hipótese do máximo de 30±8 semanas identifique o pico e o final (mínimo e máximo) da epidemia em cada país.
+4. Com base na teoria da “wisdom of the crowd ” adapte o modelo para prever o comportamento das curvas de g e s até uma data fixa escolhida como input. E com base na hipótese do máximo de 30±8 semanas identifique o pico e o final (mínimo e máximo) da epidemia em cada país.
+
+Após a implementação do modelo no passo 3, foi percebido que o comportamento do mesmo tem tendências exponenciais, então, para entender este relação, os testes do diretório [4_final_da_pandemia](4_final_da_pandemia) foram criados, estes são utilizados como base para os argumentos apresentados no relatório final, indicando que com este comportamento não é possível estimar este comportamento.
 
 > Por conta dos resultados apresentados pelo modelo implementado no passo 3, foi assumido que este exercício não era passível de ser resolvido, uma vez que, os crescimentos exponenciais apresentados pelo modelo impedem extrapolações que poderiam ser usadas para a avaliação do fim da pandemia. De toda forma, a teoria de wisdow of the crowd é aplicada no modelo desenvolvido no exercício 3.
 

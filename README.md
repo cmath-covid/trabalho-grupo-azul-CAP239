@@ -30,7 +30,7 @@ Para o desenvolvimento desta atividade, foram criados diversos scripts de análi
 - [2_analise_visualizacao_dos_dados/4_ajustes_pdf](2_analise_visualizacao_dos_dados/4_ajustes_pdf.ipynb): Como forma de investigar o comportamento do espaço de Cullen-Frey, foi criado um script que ajusta e busca a melhor PDF dentre as 86 disponíveis no [SciPy](https://www.scipy.org/). Isso é feito para mostrar que existem informações e características que podem ser considerados para a realização de uma PDF;
 - [2_analise_visualizacao_dos_dados/5_analise_de_regressao](2_analise_visualizacao_dos_dados/5_analise_de_regressao.ipynb): Por fim, faz-se a criação de análises de regressão entre as variáveis de Número Diário de Casos X Número Diário de Testes.
 
-Estes foram os passos utilizados para a realiãzaço deste exercício 2.
+Estes foram os passos utilizados para a realização deste exercício 2.
 
 3. Previsão Diária: Adapte e Aplique o modelo IMCSF-COVID19.py para cálculo automático das curvas de g e s, para todos os países e regiões, até o dia 20/5/2020. Considere o primeiro dia com mais de 50 casos
 

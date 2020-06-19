@@ -57,7 +57,9 @@ Após a implementação do modelo no passo 3, foi percebido que o comportamento 
 
 5. Desenvolva um modelo de interpolação aleatória de 23 pontos entre cada Medida diária, representando número de casos suspeitos por hora. Gere as séries e verifique se há assinatura de SOC a partir de todos os dados de flutuação. 
 
-Nesta atividade, foram implementadas dois tipos diferentes de interpolação aleatória, a interpolação contínua e discreta, sendo cada uma dessas apresentadas no arquivo [5_soc/1_interpolacao_e_soc](5_soc/1_interpolacao_e_soc.ipynb). Com base na interpolação aleatória criada, é feita a análise de SOC, que está no mesmo arquivo em que os códigos de interpolação aleatória são definidos e explicados.
+Nesta atividade, foram implementadas dois tipos diferentes de interpolação aleatória, a interpolação contínua e discreta, sendo cada uma dessas apresentadas no arquivo [5_lstm_soc/1_interpolacao_e_soc](5_lstm_soc/1_interpolacao_e_soc.ipynb). Com base na interpolação aleatória criada, é feita a análise de SOC, que está no mesmo arquivo em que os códigos de interpolação aleatória são definidos e explicados.
+
+As implementações da LSTM são apresentadas no diretório [5_lstm_soc](5_lstm_soc)
 
 ## Desenvolvendo
 

@@ -177,7 +177,14 @@ def suppression_factor(delta_g, derivative_nk):
     return ((2*delta_g) + derivative_nk) / 3
 
 
-def covidmodeler(data, dayzero, days_to_predict, weight_spectra, days_before = 7, isIncomplete = False, usePredict = True):
+def suppression_factor_updated_in_june19_2020(gfactor):
+    return 1 - gfactor
+
+
+def covidmodeler(data, dayzero, days_to_predict, weight_spectra, 
+                        days_before = 7, 
+                        isIncomplete = False, 
+                        usePredict = True, use19JuneUpdate = False):
     """Função para a aplicação do modelo de predição de casos diários, baseado em cascatas multiplicativas e fluídos sociais
         desenvolvido pelo Prof. Dr. Reinaldo Rosa
     Args:
@@ -189,10 +196,10 @@ def covidmodeler(data, dayzero, days_to_predict, weight_spectra, days_before = 7
         is_incomplete (bool): Flag indicando se os dados estão completos. Caso não estejam, a busca por datas vizinhas
         é aplicada
         use_predict (bool): Flag indicando se os dados preditos deve ser usados na média móvel
+        use19JuneUpdate (bool): Flag indicando se a atualização do modelo passada no dia 19 de Junho (Calculo do S) é para ser utilizada
     Returns:
         tuple: Tupla contendo ( Valores preditos, Parâmetros gerais , Parâmetros de supressão )
     """
-    
     
     predictedvalues = {
 		'date': [],
@@ -272,7 +279,7 @@ def covidmodeler(data, dayzero, days_to_predict, weight_spectra, days_before = 7
             nkb7 = search_predicted_values(predictedvalues, actual_date).new_cases.mean()
         elif usePredict:
             nkb7 = nkb_avg(data, actual_date.to_date_string(), days = dd, isIncomplete = isIncomplete, isMean = False)
-            nkb7 = nkb7[:days_before]
+            nkb7 = nkb7[: days_before]
             tmp = predictedvalues['new_cases']
         
             # Tratando os dados para que seja feito = Dados reais + dados preditos
@@ -297,8 +304,15 @@ def covidmodeler(data, dayzero, days_to_predict, weight_spectra, days_before = 7
         qg0 = generate_qg0(g0)
         dg = delta_g(gfactor, g0, qg, qg0)
         dnk = derivative_nk(nkb7, nktvar)
-        s = suppression_factor(dg, dnk)
         
+        # Definindo a maneira com que o "s" é calculado
+        ## Isto foi feito como requisito final do trabalho de Matemática Computacional
+        ## Nesse, o fator de "s" é calculado com 1 - g
+        if use19JuneUpdate:
+            s = suppression_factor_updated_in_june19_2020(gfactor)
+        else:
+            s = suppression_factor(dg, dnk)
+
         ## Salvando os resultados
         add_to_predictedvalues(actual_date.add(days = 1), nktvar)
         add_to_generated_parameters(nmin_nmax, nktvar, actual_date.add(days = 1), gfactor)
@@ -340,7 +354,8 @@ def organize_data(predictedvalues, generated_parameters, data_owd):
 
 ## Função auxiliar para a visualização das curvas G e S de maneira
 ### padronizada
-def plot_g_and_s(generated_parameters, generated_supression_parameters, create_fig = True):
+def plot_g_and_s(generated_parameters, generated_supression_parameters, 
+                    create_fig = True, use_s_mean = False, days_to_s_mean = 7):
     """Função auxiliar para gerar as curvas de G e S de uma execução do modelo
 
     Args:
@@ -349,6 +364,8 @@ def plot_g_and_s(generated_parameters, generated_supression_parameters, create_f
     Returns:
         None
     """
+
+    generated_supression_parameters = generated_supression_parameters.copy()
 
     # Gerando os plots de G e S
     if create_fig:
@@ -365,6 +382,14 @@ def plot_g_and_s(generated_parameters, generated_supression_parameters, create_f
     # Organizando os dados de parâmetros de supressão gerados
     generated_supression_parameters.set_index('reference_date', inplace = True)
     generated_supression_parameters.index = generated_supression_parameters.index.tz_convert(tz = None)
+
+    if use_s_mean:
+        generated_supression_parameters = (
+            generated_supression_parameters
+                .rolling(days_to_s_mean)
+                .mean()
+                .dropna()
+        )
 
     plt.title("Parâmetro s")
     plt.plot(generated_supression_parameters.index, generated_supression_parameters.s, 'k--o')

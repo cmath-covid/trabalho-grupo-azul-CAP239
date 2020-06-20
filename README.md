@@ -49,6 +49,8 @@ Nesta atividade, fez-se a implementação do modelo ICMSF-COVID19 já consideran
 
 A implementação está disponível no diretório [3_modelo_previsao_covid19](3_modelo_previsao_covid19).
 
+**Atualização do dia 19/06/2020**: A pedido do professor, foi adicionado no modelo uma forma diferente de cálculo do $s$. Para isto, as funções foram adaptadas para trabalhar considerando, de forma opcional, este comportamento. Um exemplo completo de uso com essas modificações está disponível no arquivo [3_modelo_previsao_covid19/modelo_atualizacao_19_06_2020.ipynb](3_modelo_previsao_covid19/modelo_atualizacao_19_06_2020.ipynb)
+
 4. Com base na teoria da “wisdom of the crowd ” adapte o modelo para prever o comportamento das curvas de g e s até uma data fixa escolhida como input. E com base na hipótese do máximo de 30±8 semanas identifique o pico e o final (mínimo e máximo) da epidemia em cada país.
 
 Após a implementação do modelo no passo 3, foi percebido que o comportamento do mesmo tem tendências exponenciais, então, para entender este relação, os testes do diretório [4_final_da_pandemia](4_final_da_pandemia/1_verificando_fim_da_pandemia.ipynb) foram criados, estes são utilizados como base para os argumentos apresentados no relatório final, indicando que com este comportamento não é possível estimar este comportamento.
